@@ -1,0 +1,102 @@
+---
+
+ - name: Get Policy Exec Scripts
+   ansible.windows.win_powershell:
+     script: |
+       Get-ExecutionPolicy -list
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+   register: policy_exec_script
+
+ - name: Show Policy Scripts
+   ansible.builtin.debug:
+     msg: "{{ policy_exec_script.output[4].ExecutionPolicy.String }}"
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+
+ - name: Set AllSigned Policy
+   ansible.windows.win_powershell:
+     script: |
+       Set-ExecutionPolicy AllSigned -Force
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+
+ - name: Get Policy Exec Scripts
+   ansible.windows.win_powershell:
+     script: |
+       Get-ExecutionPolicy -list
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+   register: policy_exec_script_defined
+
+ - name: Show Policy Scripts
+   ansible.builtin.debug:
+     msg: "{{ policy_exec_script_defined.output[4].ExecutionPolicy.String }}"
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+
+ - name: Install Chocolatey
+   ansible.windows.win_powershell:
+     script: |
+       Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+
+ - name: Firefox Upgrade
+   ansible.windows.win_powershell:
+     script: |
+       choco upgrade firefox --force --yes
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+
+ - name: Chrome Upgrade
+   ansible.windows.win_powershell:
+     script: |
+       choco upgrade googlechrome --force --yes
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+
+ - name: Rollback Policy Exec Scripts - Default
+   ansible.windows.win_powershell:
+     script: |
+       Set-ExecutionPolicy "{{ policy_exec_script.output[4].ExecutionPolicy.String }}" -Force
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+
+ - name: Get Policy Exec Scripts
+   ansible.windows.win_powershell:
+     script: |
+       Get-ExecutionPolicy -list
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+   register: policy_exec_script_final
+
+ - name: Show Policy Scripts
+   ansible.builtin.debug:
+     msg: "{{ policy_exec_script_final.output[4].ExecutionPolicy.String }}"
+   become: yes
+   become_user: Administrator
+   become_method: runas
+   ignore_errors: yes
+
+...

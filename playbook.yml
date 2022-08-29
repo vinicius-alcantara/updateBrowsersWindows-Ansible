@@ -1,0 +1,8 @@
+---
+
+ - name: Update Browsers - Windows Server
+   hosts: all
+   roles:
+     - updateBrowsersWinServer
+
+...

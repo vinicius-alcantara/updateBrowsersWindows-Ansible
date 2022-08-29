@@ -1,0 +1,7 @@
+---
+
+ - name: Update Browsers - Windows Server
+   include_tasks: updateBrowsersWinServer.yml
+   tags: updateBrowsersWinServer
+
+...
